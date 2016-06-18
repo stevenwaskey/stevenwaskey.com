@@ -1,0 +1,25 @@
+// Update form feedback
+/* form validation */
+form .input-group .form-control-feedback-message{width:auto !important;text-align:right !important;right:50px !important;}
+form .input-group .input-group-btn button{border-color:inherit;}
+form .form-control-feedback-message{width:auto !important;text-align:right !important;right:20px !important;}
+form .form-invalid-message{display:none;color:#FF0000;}
+form .has-danger .form-invalid-message{display:block;}
+
+form .has-feedback{
+
+	.form-control-animate{
+		transition:all ease-in-out 5s;
+	}
+
+	.form-control-danger{
+		@extend .form-control-danger;
+		transition: .25s all ease-in-out;
+	}
+	
+	.form-control-success{
+		@extend .form-control-success;
+		transition: .25s all ease-in-out;
+	}
+
+}

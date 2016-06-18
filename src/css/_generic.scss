@@ -1,0 +1,146 @@
+// Alignment -------------------------------------------------------------------------
+
+.font-left{text-align:left !important;}
+.font-right{text-align:right !important;}
+.font-center{text-align:center !important;}
+.font-justify{text-align:justify !important;}
+
+
+
+// Styling ---------------------------------------------------------------------------
+
+.font-bold{font-weight:700;}
+.font-italic{font-style:italic;}
+.font-strikethrough{text-decoration: line-through;}
+.font-anti-alias{text-shadow: rgba(0,0,0,.01) 0 0 1px;}
+
+// Font Faces ------------------------------------------------------------------------
+
+.font-face-open-sans{font-family: 'Open Sans', sans-serif;}
+.font-face-raleway{font-family: 'Raleway', sans-serif;}
+
+
+
+// Coloring --------------------------------------------------------------------------
+
+.font-red{color:#FF0000;}
+
+.font-lt-gray{color:#a6a6a6;}
+.font-gray{color:#3f3f3f;}
+.font-dk-gray{color:#383838;}
+.font-black{color:#000;}
+
+.font-green{color:#a9cf43;}
+
+.font-blue{color:#083be5;}
+.font-midnight-blue{color:#00040d;}
+
+.font-white{color:#FFF;}
+
+
+
+// Sizing ----------------------------------------------------------------------------
+
+.font-12px{font-size:12px;}
+.font-13px{font-size:13px;}
+.font-14px{font-size:14px;}
+.font-15px{font-size:15px;}
+.font-16px{font-size:16px;}
+.font-17px{font-size:17px;}
+.font-18px{font-size:18px;}
+.font-19px{font-size:19px;}
+.font-20px{font-size:20px;}
+.font-22px{font-size:22px;}
+.font-24px{font-size:24px;}
+.font-26px{font-size:26px;}
+.font-28px{font-size:28px;}
+.font-34px{font-size:34px;}
+.font-36px{font-size:36px;}
+.font-40px{font-size:40px;}
+.font-68px{font-size:68px;}
+.font-130px{font-size:130px;}
+
+
+.font-125rem{font-size:1.25rem;}
+.font-150rem{font-size:1.5rem;}
+.font-175rem{font-size:1.75rem;}
+.font-200rem{font-size:2rem;}
+
+
+
+// Headlines -------------------------------------------------------------------------
+.h1{ @extend h1; }
+.h2{ @extend h2; }
+.h3{ @extend h3; }
+.h4{ @extend h4; }
+.h5{ @extend h5; }
+.h6{ @extend h6; }
+
+
+
+// Transformations -------------------------------------------------------------------
+
+.font-rotate-90{-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-ms-transform: rotate(90deg);-o-transform: rotate(90deg);filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);}
+.font-rotate-180{-webkit-transform: rotate(-180deg);-moz-transform: rotate(-180deg);-ms-transform: rotate(-180deg);-o-transform: rotate(-180deg);filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);}
+.font-rotate-270{-webkit-transform: rotate(-90deg);-moz-transform: rotate(-90deg);-ms-transform: rotate(-90deg);-o-transform: rotate(-90deg);filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);}
+
+
+
+// Backgrounds -----------------------------------------------------------------------
+
+.bg-white{background-color:#FFF;}
+.bg-lt-gray{background-color:#b2b2b2;}
+.bg-gray{background-color:#7e7e7e;}
+
+.bg-midnight-blue{background-color:#00040d;}
+
+@mixin bg-gradient( $color1: #FFF, $color2: #000, $color1_start: 0%, $color2_start: 100%, $degrees: 0deg )
+{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#0a0033+0,06265a+100 */
+	background: #0a0033; /* Old browsers */
+	background: -moz-linear-gradient(-45deg, #0a0033 0%, #06265a 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(-45deg, #0a0033 0%,#06265a 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #0a0033 0%,#06265a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0a0033', endColorstr='#06265a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+
+
+// Containers, Margins & Padding -----------------------------------------------------
+
+.margin-0{margin:0px;}
+.margin-5{margin:5px;}
+.margin-10{margin:10px;}
+.margin-15{margin:15px;}
+
+.padding-0{padding:0px;}
+.padding-5{padding:5px;}
+.padding-10{padding:10px;}
+.padding-15{padding:15px;}
+
+.img-border-10{background:#FFF;padding:10px;border:thin solid #383838;overflow:hidden;display:inline-block;margin:auto;}
+.img-border-10 img{max-height:100%;max-width:100%;}
+
+.img-border-5{background:#FFF;padding:5px;border:thin solid #383838;overflow:hidden;display:inline-block;margin:auto;}
+.img-border-5 img{max-height:100%;max-width:100%;}
+
+.full-width{width:100%;}
+.half-width{width:50%;}
+
+// Flex Box Alignment ----------------------------------------------------------------
+
+.vertical-align-center{display:flex;align-items:center;}
+
+
+
+// Form Fields -----------------------------------------------------------------------
+.msg-success{ color: $colors-success-msg; }
+.msg-error{ color: $colors-error-msg; }
+
+
+
+// Misc ------------------------------------------------------------------------------
+
+.cursor-pointer{cursor:pointer;}
+
+.copy{color: #FFF;}

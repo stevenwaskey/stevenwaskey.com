@@ -1,0 +1,30 @@
+/**
+*
+* @domain: AtlasResults.com
+* @creation: 2016-05-10
+* @syntax: SCSS
+* @description: Master scss file for atlasresults.com.  Imports all other needed scss files.
+*
+* @see Bootstrap 4.0.0 alpha 2 - http://v4-alpha.getbootstrap.com/
+* @see SASS - http://sass-lang.com/documentation/file.SASS_REFERENCE.html
+* @see Flex box notes - https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+* @see Flex box notes - http://www.sketchingwithcss.com/samplechapter/cheatsheet.html#right
+*
+*/
+
+/* External Libraries. */
+@import "../bower_components/bootstrap/scss/bootstrap.scss";
+@import "../bower_components/components-font-awesome/scss/font-awesome.scss";
+
+/* External Fonts */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400);
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,600,100,300);
+
+/* Internal Libraries. */
+@import "variables";
+@import "generic";
+@import "animations";
+@import "bs_modifications";
+@import "template";
+
+/* Angular Directives */

@@ -1,0 +1,42 @@
+{
+  "name": "stevenwaskey.com",
+  "version": "1.0.0",
+  "description": "Stevenwaskey.com Website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stevenwaskey/stevenwaskey.com.git"
+  },
+  "author": "Steven Waskey",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/stevenwaskey/stevenwaskey.com/issues"
+  },
+  "devDependencies": {
+    "fs": "0.0.2",
+    "gulp": "~3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-clean": "~0.3.2",
+    "gulp-clean-css": "~2.0.7",
+    "gulp-concat": "~2.6.0",
+    "gulp-csslint": "~0.3.0",
+    "gulp-htmlmin": "~2.0.0",
+    "gulp-imagemin": "~3.0.1",
+    "gulp-jshint": "~2.0.0",
+    "gulp-livereload": "~3.8.1",
+    "gulp-ng-html2js": "~0.2.2",
+    "gulp-ngdocs": "^0.2.13",
+    "gulp-real-favicon": "^0.2.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-sass": "~2.3.1",
+    "gulp-shell": "~0.5.2",
+    "gulp-sitemap": "^4.1.1",
+    "gulp-sourcemaps": "~1.6.0",
+    "gulp-uglify": "~1.5.3",
+    "gulp-util": "^3.0.7",
+    "jshint": "~2.9.1"
+  }
+}
