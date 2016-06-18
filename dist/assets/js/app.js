@@ -180,6 +180,32 @@
 
 /**
  * @ngdoc overview
+ * @name Atlas Utilities Module
+ * @description
+ * Atlas Utility Modules.
+ * @author Steven Waskey
+ * @since 2016-05-23
+ * @module utilities
+ * @version 0.0.1
+ */
+(function(){
+
+	'use strict';
+
+	var modules = [
+		"PreLoader",
+		"validation",
+		"logging",
+		"notification"
+	];
+
+	angular
+		.module( "utilities", modules )
+		.constant( "MODULE_VERSION", "0.0.1" );
+
+})();
+/**
+ * @ngdoc overview
  * @name Atlas Shared Modules
  * @description
  * Loads all shared modules, components
@@ -203,32 +229,6 @@
 		.module( "shared", modules )
 		.constant( "MODULE_VERSION", "0.0.1" );
 
-
-})();
-/**
- * @ngdoc overview
- * @name Atlas Utilities Module
- * @description
- * Atlas Utility Modules.
- * @author Steven Waskey
- * @since 2016-05-23
- * @module utilities
- * @version 0.0.1
- */
-(function(){
-
-	'use strict';
-
-	var modules = [
-		"PreLoader",
-		"validation",
-		"logging",
-		"notification"
-	];
-
-	angular
-		.module( "utilities", modules )
-		.constant( "MODULE_VERSION", "0.0.1" );
 
 })();
 /**
@@ -452,436 +452,6 @@
 		.controller( "PageController", [ "$scope", "$state", "$http", "$q", "PreLoader", "notificationService", PageController ] );
 
 })();
-/**
- * @ngdoc overview
- * @name Atlas Image Fade-In Directive.
- * @description
- * Fades in the element on load.
- * Used as an element attribute.
- * Must be used with an element that can
- * trigger the 'load' event.
- * @author Steven Waskey
- * @since 2016-05-23
- * @module imgFadeIn
- * @version 0.0.1
- */
-(function(){
-
-	"use strict";
-
-	function imgFadeIn( $timeout )
-	{
-	
-		function link( $scope, $element, $attrs )
-		{
-	        $element.addClass( "img-fade ng-hide-remove" );
-	        $timeout($element.on("load", function() {$element.addClass("ng-hide-add");}));
-		}
-	
-		return {
-		    restrict: "A",
-		    link: link
-		};
-	
-	}
-
-	angular
-		.module( "imgFadeIn", [] )
-		.constant( "MODULE_VERSION", "0.0.1" )	
-		.directive( "imgFadeIn", [ "$timeout", imgFadeIn ] );
-
-
-})();
-/**
- * @ngdoc overview
- * @name Atlas Image Hover Roll-over Directive
- * @description
- * Atlas shared directives & components.
- * @author Steven Waskey
- * @since 2016-05-23
- * @module imgWithHover
- * @version 0.0.1
- */
-(function(){
-
-	"use strict";
-
-	function imgWithHover( $timeout )
-	{
-
-		var imgs = {
-			img_bg: {
-				model: null,
-				src: null
-			},
-			img_fg: {
-				model: null,
-				src: null
-			}
-		};
-	
-		var show = function( $scope, $element )
-		{
-			$scope.show_img = true;
-			$element.find( ".img_fg" ).addClass("ng-show");
-		};
-	
-		var hide = function( $scope, $element )
-		{
-			$scope.show_img = false;
-		};
-
-		function link( $scope, $element, $attrs )
-		{
-
-			$scope.img_bg = $attrs.src;
-			$scope.img_fg = $attrs.src.replace( ".off.",".on." );
-	
-			$scope.show_img = false;
-	
-			$element.on("mouseover",function(){$timeout( show( $scope, $element ) ); });
-	
-			$element.on("mouseout",function(){$timeout( hide( $scope, $element ) ); });
-	
-		}
-	
-		return {
-			restrict: "E",
-			template: "<div class='img-with-hover' ><img src='{{img_bg}}' class='img-hover img-bg' /><img src='{{img_fg}}' ng-show='show_img' class='img-hover img-fg' /></div>",
-			link: link
-		};
-
-	}
-
-	angular
-		.module( "imgWithHover", [] )
-		.constant( "MODULE_VERSION", "0.0.1" )	
-		.directive( "imgWithHover", [ "$timeout", imgWithHover ] );
-
-
-})();
-/**
- * @ngdoc overview
- * @name Instagram Feed Wrapper
- * @description
- * Fetches images from Instagram API
- * using the Instafeed JS library.
- * @author Steven Waskey
- * @since 2016-06-16
- * @module instafeed
- * @version 0.0.1
- */
-(function(){
-	
-	"use strict";
-
-	/**
-	 * @ngdoc service
-	 * @name InstagramService
-	 * @description
-	 * Serves up the Instafeed API object.
-	 * @param {Object} $q Inject the promise manager '$q'.
-	 * @param {Object} $http Inject the HTTP service provider.
-	 */
-	function InstagramService( $q, $http )
-	{
-
-
-		var ig_feed;
-
-		/**
-		 * @ngdoc property
-		 * @name data
-		 * @propertyOf Atlas/shared/InstagramService
-		 * @description
-		 * Stores parsed data, returned from Instagram
-		 * API
-		 */
-		var data = {};
-
-		
-		/**
-		 * @ngdoc function
-		 * @name get
-		 * @propertyOf Atlas/shared/InstagramService
-		 * @description
-		 * Returns requested value from private 
-		 * `data` object.
-		 * @param {Object} param Attrib directing the method as to what type of data, or which piece of data, is being requested.
-		 */
-		this.get = function( param )
-		{
-			if( data === false ){ return false; }
-
-			if( typeof data !== "object" ){ return false; }
-
-			if( typeof param !== "string" ){ return data; }
-
-			if( data.hasOwnProperty( param ) )
-			{
-				return data[ param ];
-			}
-
-			return "ERR";
-
-		}
-
-
-		/**
-		 * @ngdoc function
-		 * @name parse
-		 * @propertyOf Atlas/shared/InstagramService
-		 * @description
-		 * Parses response from Instafeed data dump.
-		 */
-		var parse = function( response )
-		{
-
-			var d,r,f,passed;
-
-			if( typeof response !== 'object' )
-			{
-				data = false;
-				return false;
-			}
-
-			data = { images: [] };
-
-
-			for( r in response )
-			{
-
-				if( typeof response[r] !== "object" ){ continue; }
-
-				if( !response[r].hasOwnProperty( "data" ) ){ continue; }
-
-				if( typeof response[r].data !== "object" ){ continue; }
-
-				for( d in response[r].data )
-				{
-					if( response[r].data[d].hasOwnProperty( "images" ) )
-					{
-						data.images.push( response[r].data[d].images );
-						passed = true;
-					}
-				}
-			}
-
-			return passed === true;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name fetch
-		 * @propertyOf Atlas/shared/InstagramService
-		 * @description
-		 * Instantiates the Instafeed API object
-		 * makes default request to Instagram API
-		 * service.
-		 */
-		this.fetch = function()
-		{
-			var deferred = $q.defer();
-			var t,r;
-			var responses = [];
-
-			ig_feed = new Instafeed({
-				get: "user",
-				userId: "3421829353",
-				accessToken: "3421829353.1677ed0.d4c692d961ba4866aea147fcfa1fc02c",
-				mock: true,
-				sortBy: "random",
-				success: function( response )
-				{
-
-					responses.push( response );
-
-					t = 0;
-
-					for( r in responses )
-					{
-						t += parseInt( responses[r].data.length );
-					}
-
-					// if( ig_feed.hasNext() )
-					if( t > 40 )
-					{
-						if( parse( responses ) )
-						{
-							deferred.resolve();
-						}
-						
-						else
-						{
-							deferred.reject();
-						}
-
-
-					}
-
-					else
-					{
-						ig_feed.next();
-						ig_feed.run();
-					}
-				}
-			});
-			ig_feed.run();
-
-			return deferred.promise;
-		}
-
-	}
-
-	function InstagramGrid( InstagramService )
-	{
-
-		function controller( $scope, $element, $attrs )
-		{
-
-			var vm = this;
-
-			vm.imgs = null;
-
-			vm.img_size = "low_resolution";
-
-			vm.build = function()
-			{
-				vm.imgs = InstagramService.get( "images" );
-			}
-
-			InstagramService
-				.fetch()
-				.then(vm.build);
-
-		}
-
-		return {
-			scope: {},
-			restrict: "E",
-			controller: [ "$scope","$element","$attrs",controller ],
-			controllerAs: "grid",
-			template: "<section class='instagram-grid row'><div class='grid-item' ng-repeat='img in grid.imgs'><img ng-src='{{img[grid.img_size].url}}' /></div></section>"
-		}
-
-	}
-
-	angular.module( "instafeed",[] )
-		.constant( "MODULE_VERSION", "0.0.1" )	
-		.service( "InstagramService", [ "$q", "$http", InstagramService ] )
-		.directive( "instagramGrid",[ "InstagramService", InstagramGrid ] );
-
-})();
-/**
- * @ngdoc overview
- * @name Angular Parallax Directive
- * @description
- * Attaches properties to imgs & 
- * other DOM elements to enable 
- * parallax style behavoirs.
- * @author Brett Donohoo
- * @since 2016-08-13
- * @module angular-parallax
- * @version 0.0.2
-
-(function(){
-
-	"use strict";
-
-	function parallax( $window )
-	{
-
-		function link( $scope, $element, $attrs )
-		{
-
-			var setPosition = function () {
-
-				if( !$scope.parallaxHorizontalOffset )
-				{
-					$scope.parallaxHorizontalOffset = "0";
-				}
-
-				var calcValY = $window.pageYOffset * ($scope.parallaxRatio ? $scope.parallaxRatio : 1.1 );
-
-				if (calcValY <= $window.innerHeight)
-				{
-
-					var topVal = (calcValY < $scope.parallaxVerticalOffset ? $scope.parallaxVerticalOffset : calcValY);
-
-					var hozVal = ($scope.parallaxHorizontalOffset.indexOf("%") === -1 ? $scope.parallaxHorizontalOffset + 'px' : $scope.parallaxHorizontalOffset);
-
-					$element.css('transform', 'translate(' + hozVal + ', ' + topVal + 'px)');
-
-				}
-			};
-
-			setPosition();
-
-			angular.element( $window ).bind("scroll", setPosition );
-
-			angular.element( $window ).bind("touchmove", setPosition );
-
-		}
-
-		return {
-			restrict: 'A',
-			scope: {
-				parallaxRatio: '@',
-				parallaxVerticalOffset: '@',
-				parallaxHorizontalOffset: '@',
-			},
-			link: link
-		};
-
-	}
-
-	function parallaxBackground( $window )
-	{
-
-		function link( $scope, $element, $attrs )
-		{
-
-			var setPosition = function () {
-
-				var calcValY = ($element.prop('offsetTop') - $window.pageYOffset) * ($scope.parallaxRatio ? $scope.parallaxRatio : 1.1) - ($scope.parallaxVerticalOffset || 0);
-			
-				// horizontal positioning
-				$element.css('background-position', "50% " + calcValY + "px");
-			};
-			
-			// set our initial position - fixes webkit background render bug
-			angular.element($window).bind('load', function(e) {
-				setPosition();
-				$scope.$apply();
-			});
-			
-			angular.element( $window ).bind( "scroll", setPosition );
-
-			angular.element( $window ).bind( "touchmove", setPosition );
-
-		}
-
-		return {
-			restrict: 'A',
-			transclude: true,
-			template: '<div ng-transclude></div>',
-			scope: {
-				parallaxRatio: '@',
-				parallaxVerticalOffset: '@',
-			},
-			link: link
-		};
-
-	}
-
-	angular
-		.module( "angular-parallax", [])
-		.constant( "MODULE_VERSION", "0.0.2" )
-		.directive( "parallax", [ "$window", parallax ] )
-		.directive( "parallaxBackground", [ "$window", parallaxBackground ] );
-
-})();
- */
 /**
  * @ngdoc overview
  * @name Atlas Formatter Module
@@ -1681,6 +1251,46 @@
 })();
 /**
  * @ngdoc overview
+ * @name Atlas Image Fade-In Directive.
+ * @description
+ * Fades in the element on load.
+ * Used as an element attribute.
+ * Must be used with an element that can
+ * trigger the 'load' event.
+ * @author Steven Waskey
+ * @since 2016-05-23
+ * @module imgFadeIn
+ * @version 0.0.1
+ */
+(function(){
+
+	"use strict";
+
+	function imgFadeIn( $timeout )
+	{
+	
+		function link( $scope, $element, $attrs )
+		{
+	        $element.addClass( "img-fade ng-hide-remove" );
+	        $timeout($element.on("load", function() {$element.addClass("ng-hide-add");}));
+		}
+	
+		return {
+		    restrict: "A",
+		    link: link
+		};
+	
+	}
+
+	angular
+		.module( "imgFadeIn", [] )
+		.constant( "MODULE_VERSION", "0.0.1" )	
+		.directive( "imgFadeIn", [ "$timeout", imgFadeIn ] );
+
+
+})();
+/**
+ * @ngdoc overview
  * @name Atlas Validation Module
  * @description
  * Stores all global application 
@@ -1705,6 +1315,396 @@
 		.constant( "MODULE_VERSION", "0.0.1" );
 
 })();
+/**
+ * @ngdoc overview
+ * @name Atlas Image Hover Roll-over Directive
+ * @description
+ * Atlas shared directives & components.
+ * @author Steven Waskey
+ * @since 2016-05-23
+ * @module imgWithHover
+ * @version 0.0.1
+ */
+(function(){
+
+	"use strict";
+
+	function imgWithHover( $timeout )
+	{
+
+		var imgs = {
+			img_bg: {
+				model: null,
+				src: null
+			},
+			img_fg: {
+				model: null,
+				src: null
+			}
+		};
+	
+		var show = function( $scope, $element )
+		{
+			$scope.show_img = true;
+			$element.find( ".img_fg" ).addClass("ng-show");
+		};
+	
+		var hide = function( $scope, $element )
+		{
+			$scope.show_img = false;
+		};
+
+		function link( $scope, $element, $attrs )
+		{
+
+			$scope.img_bg = $attrs.src;
+			$scope.img_fg = $attrs.src.replace( ".off.",".on." );
+	
+			$scope.show_img = false;
+	
+			$element.on("mouseover",function(){$timeout( show( $scope, $element ) ); });
+	
+			$element.on("mouseout",function(){$timeout( hide( $scope, $element ) ); });
+	
+		}
+	
+		return {
+			restrict: "E",
+			template: "<div class='img-with-hover' ><img src='{{img_bg}}' class='img-hover img-bg' /><img src='{{img_fg}}' ng-show='show_img' class='img-hover img-fg' /></div>",
+			link: link
+		};
+
+	}
+
+	angular
+		.module( "imgWithHover", [] )
+		.constant( "MODULE_VERSION", "0.0.1" )	
+		.directive( "imgWithHover", [ "$timeout", imgWithHover ] );
+
+
+})();
+/**
+ * @ngdoc overview
+ * @name Instagram Feed Wrapper
+ * @description
+ * Fetches images from Instagram API
+ * using the Instafeed JS library.
+ * @author Steven Waskey
+ * @since 2016-06-16
+ * @module instafeed
+ * @version 0.0.1
+ */
+(function(){
+	
+	"use strict";
+
+	/**
+	 * @ngdoc service
+	 * @name InstagramService
+	 * @description
+	 * Serves up the Instafeed API object.
+	 * @param {Object} $q Inject the promise manager '$q'.
+	 * @param {Object} $http Inject the HTTP service provider.
+	 */
+	function InstagramService( $q, $http )
+	{
+
+
+		var ig_feed;
+
+		/**
+		 * @ngdoc property
+		 * @name data
+		 * @propertyOf Atlas/shared/InstagramService
+		 * @description
+		 * Stores parsed data, returned from Instagram
+		 * API
+		 */
+		var data = {};
+
+		
+		/**
+		 * @ngdoc function
+		 * @name get
+		 * @propertyOf Atlas/shared/InstagramService
+		 * @description
+		 * Returns requested value from private 
+		 * `data` object.
+		 * @param {Object} param Attrib directing the method as to what type of data, or which piece of data, is being requested.
+		 */
+		this.get = function( param )
+		{
+			if( data === false ){ return false; }
+
+			if( typeof data !== "object" ){ return false; }
+
+			if( typeof param !== "string" ){ return data; }
+
+			if( data.hasOwnProperty( param ) )
+			{
+				return data[ param ];
+			}
+
+			return "ERR";
+
+		}
+
+
+		/**
+		 * @ngdoc function
+		 * @name parse
+		 * @propertyOf Atlas/shared/InstagramService
+		 * @description
+		 * Parses response from Instafeed data dump.
+		 */
+		var parse = function( response )
+		{
+
+			var d,r,f,passed;
+
+			if( typeof response !== 'object' )
+			{
+				data = false;
+				return false;
+			}
+
+			data = { images: [] };
+
+
+			for( r in response )
+			{
+
+				if( typeof response[r] !== "object" ){ continue; }
+
+				if( !response[r].hasOwnProperty( "data" ) ){ continue; }
+
+				if( typeof response[r].data !== "object" ){ continue; }
+
+				for( d in response[r].data )
+				{
+					if( response[r].data[d].hasOwnProperty( "images" ) )
+					{
+						data.images.push( response[r].data[d].images );
+						passed = true;
+					}
+				}
+			}
+
+			return passed === true;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name fetch
+		 * @propertyOf Atlas/shared/InstagramService
+		 * @description
+		 * Instantiates the Instafeed API object
+		 * makes default request to Instagram API
+		 * service.
+		 */
+		this.fetch = function()
+		{
+			var deferred = $q.defer();
+			var t,r;
+			var responses = [];
+
+			ig_feed = new Instafeed({
+				get: "user",
+				userId: "3421829353",
+				accessToken: "3421829353.1677ed0.d4c692d961ba4866aea147fcfa1fc02c",
+				mock: true,
+				sortBy: "random",
+				success: function( response )
+				{
+
+					responses.push( response );
+
+					t = 0;
+
+					for( r in responses )
+					{
+						t += parseInt( responses[r].data.length );
+					}
+
+					// if( ig_feed.hasNext() )
+					if( t > 40 )
+					{
+						if( parse( responses ) )
+						{
+							deferred.resolve();
+						}
+						
+						else
+						{
+							deferred.reject();
+						}
+
+
+					}
+
+					else
+					{
+						ig_feed.next();
+						ig_feed.run();
+					}
+				}
+			});
+			ig_feed.run();
+
+			return deferred.promise;
+		}
+
+	}
+
+	function InstagramGrid( InstagramService )
+	{
+
+		function controller( $scope, $element, $attrs )
+		{
+
+			var vm = this;
+
+			vm.imgs = null;
+
+			vm.img_size = "low_resolution";
+
+			vm.build = function()
+			{
+				vm.imgs = InstagramService.get( "images" );
+			}
+
+			InstagramService
+				.fetch()
+				.then(vm.build);
+
+		}
+
+		return {
+			scope: {},
+			restrict: "E",
+			controller: [ "$scope","$element","$attrs",controller ],
+			controllerAs: "grid",
+			template: "<section class='instagram-grid row'><div class='grid-item' ng-repeat='img in grid.imgs'><img ng-src='{{img[grid.img_size].url}}' /></div></section>"
+		}
+
+	}
+
+	angular.module( "instafeed",[] )
+		.constant( "MODULE_VERSION", "0.0.1" )	
+		.service( "InstagramService", [ "$q", "$http", InstagramService ] )
+		.directive( "instagramGrid",[ "InstagramService", InstagramGrid ] );
+
+})();
+/**
+ * @ngdoc overview
+ * @name Angular Parallax Directive
+ * @description
+ * Attaches properties to imgs & 
+ * other DOM elements to enable 
+ * parallax style behavoirs.
+ * @author Brett Donohoo
+ * @since 2016-08-13
+ * @module angular-parallax
+ * @version 0.0.2
+
+(function(){
+
+	"use strict";
+
+	function parallax( $window )
+	{
+
+		function link( $scope, $element, $attrs )
+		{
+
+			var setPosition = function () {
+
+				if( !$scope.parallaxHorizontalOffset )
+				{
+					$scope.parallaxHorizontalOffset = "0";
+				}
+
+				var calcValY = $window.pageYOffset * ($scope.parallaxRatio ? $scope.parallaxRatio : 1.1 );
+
+				if (calcValY <= $window.innerHeight)
+				{
+
+					var topVal = (calcValY < $scope.parallaxVerticalOffset ? $scope.parallaxVerticalOffset : calcValY);
+
+					var hozVal = ($scope.parallaxHorizontalOffset.indexOf("%") === -1 ? $scope.parallaxHorizontalOffset + 'px' : $scope.parallaxHorizontalOffset);
+
+					$element.css('transform', 'translate(' + hozVal + ', ' + topVal + 'px)');
+
+				}
+			};
+
+			setPosition();
+
+			angular.element( $window ).bind("scroll", setPosition );
+
+			angular.element( $window ).bind("touchmove", setPosition );
+
+		}
+
+		return {
+			restrict: 'A',
+			scope: {
+				parallaxRatio: '@',
+				parallaxVerticalOffset: '@',
+				parallaxHorizontalOffset: '@',
+			},
+			link: link
+		};
+
+	}
+
+	function parallaxBackground( $window )
+	{
+
+		function link( $scope, $element, $attrs )
+		{
+
+			var setPosition = function () {
+
+				var calcValY = ($element.prop('offsetTop') - $window.pageYOffset) * ($scope.parallaxRatio ? $scope.parallaxRatio : 1.1) - ($scope.parallaxVerticalOffset || 0);
+			
+				// horizontal positioning
+				$element.css('background-position', "50% " + calcValY + "px");
+			};
+			
+			// set our initial position - fixes webkit background render bug
+			angular.element($window).bind('load', function(e) {
+				setPosition();
+				$scope.$apply();
+			});
+			
+			angular.element( $window ).bind( "scroll", setPosition );
+
+			angular.element( $window ).bind( "touchmove", setPosition );
+
+		}
+
+		return {
+			restrict: 'A',
+			transclude: true,
+			template: '<div ng-transclude></div>',
+			scope: {
+				parallaxRatio: '@',
+				parallaxVerticalOffset: '@',
+			},
+			link: link
+		};
+
+	}
+
+	angular
+		.module( "angular-parallax", [])
+		.constant( "MODULE_VERSION", "0.0.2" )
+		.directive( "parallax", [ "$window", parallax ] )
+		.directive( "parallaxBackground", [ "$window", parallaxBackground ] );
+
+})();
+ */
 /**
  * @ngdoc overview
  * @name offCanvasNavigation
